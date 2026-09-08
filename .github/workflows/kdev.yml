@@ -7,10 +7,14 @@ on:
   repository_dispatch:
   workflow_dispatch:
 
+env:
+  TZ: Asia/Shanghai
+
 jobs:
   build:
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
         PLATFORM:
           - bdy-g98
