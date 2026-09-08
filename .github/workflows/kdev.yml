@@ -1,20 +1,10 @@
 name: kdev Build
+
 on:
   push:
-    paths-ignore:
-      - '**.md'
     branches:
-      - master
-  pull_request:
-    paths-ignore:
-      - '**.md'
-    branches:
-      - master
-  workflow_call:
-    inputs:
-      build-configs:
-        type: string
-        required: true
+      - kdev
+  repository_dispatch:
   workflow_dispatch:
 
 jobs:
@@ -104,9 +94,20 @@ jobs:
           ./build.sh --device ${{matrix.PLATFORM}} --release ${{matrix.CONFIGURATION}} --edk2-flags "${EDK2_BUILD_FLAGS}"
           mv RK3588_NOR_FLASH.img ${{matrix.PLATFORM}}_UEFI_${{matrix.CONFIGURATION}}_${{steps.get_version_tag.outputs.version}}.img
 
-      - name: Upload artifact
-        uses: actions/upload-artifact@v4
+      - name: Upload EDK2 UEFI to Release
+        uses: ncipollo/release-action@main
         with:
-          name: ${{matrix.PLATFORM}} UEFI ${{matrix.CONFIGURATION}} image
-          path: ./*.img
-          if-no-files-found: error
+          tag: spi_recovery
+          artifacts: ./*.img
+          allowUpdates: true
+          removeArtifacts: true
+          replacesArtifacts: true
+          token: ${{ secrets.GITHUB_TOKEN }}
+          body: |
+            # EDK2 UEFI For RK3588
+
+            ## 免责声明
+
+            - **按原样提供**：本镜像不作任何明示或暗示的保证，使用风险由用户自行承担。
+            - **无官方关联**：本项目与 Rockchip、任何商业实体无关，为非盈利自由分享。
+            - **安全提示**：部署后请及时更新安全补丁、修改默认密码、配置防火墙及访问控制策略。
