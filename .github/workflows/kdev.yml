@@ -13,6 +13,7 @@ jobs:
     strategy:
       matrix:
         PLATFORM:
+          - bdy-g98
           - aio-3588q
           - blade3
           - edge2
@@ -22,7 +23,6 @@ jobs:
           - itx-3588j
           - nanopc-cm3588-nas
           - nanopc-t6
-          - bdy-g98
           - nanopi-m6
           - nanopi-r6c
           - nanopi-r6s
@@ -97,10 +97,10 @@ jobs:
       - name: Upload EDK2 UEFI to Release
         uses: ncipollo/release-action@main
         with:
-          tag: spi_recovery
+          tag: edk2-uefi-rk3588
           artifacts: ./*.img
           allowUpdates: true
-          removeArtifacts: true
+          removeArtifacts: false
           replacesArtifacts: true
           token: ${{ secrets.GITHUB_TOKEN }}
           body: |
